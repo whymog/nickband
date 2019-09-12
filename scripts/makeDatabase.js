@@ -22,9 +22,18 @@ songs.map(song => {
   const simplifiedSong = {};
 
   for (let i = 0; i < fieldsToUse.length; i++) {
-    const text = song[fieldsToUse[i]];
+    let text = song[fieldsToUse[i]]["$t"];
 
-    simplifiedSong[simplifiedFieldsToUse[i]] = song[fieldsToUse[i]]["$t"];
+    if (simplifiedFieldsToUse[i] === "title") {
+      // Cleanup titles
+
+      text = text.match(/([\w\d\s]+)/);
+
+      text = text[1];
+      console.log(text);
+    }
+
+    simplifiedSong[simplifiedFieldsToUse[i]] = text;
   }
 
   simplifiedSongs.push(simplifiedSong);
