@@ -7,13 +7,7 @@ const songs = rawData.feed.entry;
 
 console.log(songs.length, "songs found");
 
-const fieldsToUse = [
-  "gsx$songtitle",
-  "gsx$artist",
-  "gsx$decade",
-  "gsx$genre",
-  "gsx$owned"
-];
+const fieldsToUse = ["gsx$songtitle", "gsx$artist", "gsx$decade", "gsx$genre", "gsx$owned"];
 
 const simplifiedFieldsToUse = ["title", "artist", "year", "genre", "owned"];
 
@@ -36,6 +30,11 @@ songs.map(song => {
     // Mix Pop/Rock and Pop-Rock together
     if (simplifiedFieldsToUse[i] === "genre" && text === "Pop/Rock") {
       text = "Pop-Rock";
+    }
+
+    // Mix Prog and Progressive together
+    if (simplifiedFieldsToUse[i] === "genre" && text === "Progressive") {
+      text = "Prog";
     }
 
     simplifiedSong[simplifiedFieldsToUse[i]] = text;

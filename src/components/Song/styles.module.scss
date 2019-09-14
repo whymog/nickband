@@ -1,0 +1,8 @@
+@import "../../_variables.scss";
+
+.song {
+  width: calc(100vw * 10 / 12 - 2px);
+  padding: 8px calc(100vw * 1 / 12) 12px;
+  border: 1px solid $gray-66;
+  background-color: $white;
+}
