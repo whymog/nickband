@@ -22,6 +22,20 @@ class App extends React.Component {
     };
   }
 
+  clearFilters() {
+    const searchInput = document.getElementById("search");
+    searchInput.value = "";
+
+    this.setState({
+      filters: {
+        isOwned: false,
+        genre: "",
+        searchString: ""
+      },
+      isShowingGenreFilters: false
+    });
+  }
+
   getOwnedSongsCount() {
     const ownedSongs = db.filter(song => song.owned === "Y");
     return ownedSongs.length;
@@ -107,8 +121,21 @@ class App extends React.Component {
     });
   }
 
+  updateSearchString(e) {
+    e.preventDefault();
+    console.log(e.target[0].value);
+
+    this.setState({
+      filters: {
+        ...this.state.filters,
+        searchString: e.target[0].value
+      }
+    });
+  }
+
   render() {
-    const { totalSongs, ownedSongs, isShowingGenreFilters, sortByTitle, isDarkMode } = this.state;
+    const { totalSongs, ownedSongs, filters, isShowingGenreFilters, sortByTitle, isDarkMode } = this.state;
+    const { isOwned } = filters;
 
     let filteredSongs = this.getFilteredSongs();
     let sortedSongs = this.getSortedSongs(filteredSongs, sortByTitle);
@@ -130,20 +157,51 @@ class App extends React.Component {
           </div>
           <div>{sortedSongs.length} shown</div>
           <div className={styles.option}>
-            <input id="ownedSongsToggle" type="checkbox" onChange={this.toggleOwnedSongs.bind(this)} />
+            <form action="." onSubmit={this.updateSearchString.bind(this)}>
+              <input
+                className={styles.textInput}
+                id="search"
+                type="search"
+                placeholder="Search for songs or artists..."
+              ></input>
+            </form>
+          </div>
+          <div className={styles.option}>
+            <input
+              id="ownedSongsToggle"
+              type="checkbox"
+              onChange={this.toggleOwnedSongs.bind(this)}
+              checked={isOwned ? true : false}
+            />
             <label htmlFor="ownedSongsToggle">Show only songs that Nick owns</label>
           </div>
           <div className={styles.option}>
-            <input id="showGenresToggle" type="checkbox" onChange={this.toggleVisibleGenres.bind(this)} />
+            <input
+              id="showGenresToggle"
+              type="checkbox"
+              onChange={this.toggleVisibleGenres.bind(this)}
+              checked={isShowingGenreFilters}
+            />
             <label htmlFor="showGenresToggle">Filter by genre</label>
           </div>
-          {isShowingGenreFilters &&
-            genres.map((genre, i) => (
-              <button key={i} name={genre} onClick={this.setGenreFilter.bind(this)}>
-                {genre}
-              </button>
-            ))}
-          <button onClick={this.setGenreFilter.bind(this)}>CLEAR GENRE</button>
+          <div className={styles.genres}>
+            {isShowingGenreFilters &&
+              genres.map((genre, i) => (
+                <button
+                  key={i}
+                  className={`${styles.button} ${
+                    filters.genre.length && filters.genre === genre ? styles.active : styles.inactive
+                  }`}
+                  name={genre}
+                  onClick={this.setGenreFilter.bind(this)}
+                >
+                  {genre}
+                </button>
+              ))}
+          </div>
+          <button className={styles.button} onClick={this.clearFilters.bind(this)}>
+            CLEAR FILTERS
+          </button>
         </div>
         {sortedSongs.map((song, i) => (
           <Song key={i} isDarkMode={isDarkMode} {...song} />
