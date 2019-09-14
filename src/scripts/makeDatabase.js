@@ -22,6 +22,7 @@ songs.map(song => {
       // Cleanup titles
       text = text.match(/([\w\d\s'\/\.!¿?:;,]+)/);
       text = text[1];
+      text = text.trim();
     }
 
     // Mix Pop/Rock and Pop-Rock together

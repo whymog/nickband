@@ -32,7 +32,8 @@ class App extends React.Component {
         genre: "",
         searchString: ""
       },
-      isShowingGenreFilters: false
+      isShowingGenreFilters: false,
+      sortByTitle: false
     });
   }
 
@@ -51,8 +52,8 @@ class App extends React.Component {
       if (filters.genre.length && filters.genre !== song.genre) return;
       if (
         filters.searchString.length &&
-        !song.title.match(filters.searchString) &&
-        !song.artist.match(filters.searchString)
+        !song.title.toLowerCase().match(filters.searchString.toLowerCase()) &&
+        !song.artist.toLowerCase().match(filters.searchString.toLowerCase())
       )
         return;
 
@@ -121,6 +122,12 @@ class App extends React.Component {
     });
   }
 
+  toggleSortBy() {
+    this.setState({
+      sortByTitle: !this.state.sortByTitle
+    });
+  }
+
   updateSearchString(e) {
     e.preventDefault();
     console.log(e.target[0].value);
@@ -174,6 +181,15 @@ class App extends React.Component {
               checked={isOwned ? true : false}
             />
             <label htmlFor="ownedSongsToggle">Show only songs that Nick owns</label>
+          </div>
+          <div className={styles.option}>
+            <input
+              id="sortByToggle"
+              type="checkbox"
+              onChange={this.toggleSortBy.bind(this)}
+              checked={sortByTitle ? true : false}
+            />
+            <label htmlFor="sortByToggle">Sort by title</label>
           </div>
           <div className={styles.option}>
             <input
