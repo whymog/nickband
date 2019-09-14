@@ -44,6 +44,17 @@ class App extends React.Component {
     return filteredSongs;
   }
 
+  getGenres(songs) {
+    let songGenres = [];
+
+    songs.forEach(song => songGenres.push(song.genre));
+
+    const genres = new Set(songGenres);
+    console.log(genres);
+
+    return genres;
+  }
+
   toggleOwnedSongs() {
     this.setState({
       filters: {
@@ -56,6 +67,12 @@ class App extends React.Component {
   render() {
     const filteredSongs = this.getFilteredSongs();
     const { totalSongs, ownedSongs } = this.state;
+    const genresSet = this.getGenres(filteredSongs);
+    const genres = [];
+
+    genresSet.forEach(genre => genres.push(genre));
+
+    console.log(genres);
 
     return (
       <div className="App">
@@ -64,12 +81,19 @@ class App extends React.Component {
           {ownedSongs} songs owned | {totalSongs} available |{" "}
           {filteredSongs.length} shown
         </div>
-        <input
-          id="ownedSongsToggle"
-          type="checkbox"
-          onChange={this.toggleOwnedSongs.bind(this)}
-        />
-        <label htmlFor="ownedSongsToggle">Show only songs that Nick owns</label>
+        <div>
+          <input
+            id="ownedSongsToggle"
+            type="checkbox"
+            onChange={this.toggleOwnedSongs.bind(this)}
+          />
+          <label htmlFor="ownedSongsToggle">
+            Show only songs that Nick owns
+          </label>
+        </div>
+        {genres.map(genre => (
+          <button>{genre}</button>
+        ))}
         {filteredSongs.map((song, i) => (
           <Song key={i} {...song} />
         ))}
