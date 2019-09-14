@@ -9,11 +9,18 @@ class App extends React.Component {
 
     this.state = {
       filters: {
-        isOwned: true,
+        isOwned: false,
         genre: "",
         searchString: ""
-      }
+      },
+      totalSongs: db.length,
+      ownedSongs: this.getOwnedSongsCount()
     };
+  }
+
+  getOwnedSongsCount() {
+    const ownedSongs = db.filter(song => song.owned === "Y");
+    return ownedSongs.length;
   }
 
   getFilteredSongs() {
@@ -37,13 +44,32 @@ class App extends React.Component {
     return filteredSongs;
   }
 
+  toggleOwnedSongs() {
+    this.setState({
+      filters: {
+        ...this.state.filters,
+        isOwned: !this.state.filters.isOwned
+      }
+    });
+  }
+
   render() {
     const filteredSongs = this.getFilteredSongs();
-    console.log(filteredSongs.length);
+    const { totalSongs, ownedSongs } = this.state;
 
     return (
       <div className="App">
         <h1>NickBand v0.1</h1>
+        <div>
+          {ownedSongs} songs owned | {totalSongs} available |{" "}
+          {filteredSongs.length} shown
+        </div>
+        <input
+          id="ownedSongsToggle"
+          type="checkbox"
+          onChange={this.toggleOwnedSongs.bind(this)}
+        />
+        <label htmlFor="ownedSongsToggle">Show only songs that Nick owns</label>
         {filteredSongs.map((song, i) => (
           <Song key={i} {...song} />
         ))}
