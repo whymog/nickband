@@ -87,8 +87,7 @@ class App extends React.Component {
       <div className="App">
         <h1>NickBand v0.1</h1>
         <div>
-          {ownedSongs} songs owned | {totalSongs} available |{" "}
-          {filteredSongs.length} shown
+          {ownedSongs} songs owned | {totalSongs} available | {filteredSongs.length} shown
         </div>
         <div>
           <input
@@ -96,9 +95,7 @@ class App extends React.Component {
             type="checkbox"
             onChange={this.toggleOwnedSongs.bind(this)}
           />
-          <label htmlFor="ownedSongsToggle">
-            Show only songs that Nick owns
-          </label>
+          <label htmlFor="ownedSongsToggle">Show only songs that Nick owns</label>
         </div>
         {genres.map((genre, i) => (
           <button key={i} name={genre} onClick={this.setGenreFilter.bind(this)}>
