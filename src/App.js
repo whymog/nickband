@@ -13,6 +13,7 @@ class App extends React.Component {
         genre: "",
         searchString: ""
       },
+      genres: this.getGenres(db),
       totalSongs: db.length,
       ownedSongs: this.getOwnedSongsCount()
     };
@@ -76,10 +77,9 @@ class App extends React.Component {
   render() {
     const filteredSongs = this.getFilteredSongs();
     const { totalSongs, ownedSongs } = this.state;
-    const genresSet = this.getGenres(filteredSongs);
     const genres = [];
 
-    genresSet.forEach(genre => genres.push(genre));
+    this.state.genres.forEach(genre => genres.push(genre));
 
     console.log(genres);
 

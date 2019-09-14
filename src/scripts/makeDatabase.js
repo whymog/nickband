@@ -33,6 +33,11 @@ songs.map(song => {
       console.log(text);
     }
 
+    // Mix Pop/Rock and Pop-Rock together
+    if (simplifiedFieldsToUse[i] === "genre" && text === "Pop/Rock") {
+      text = "Pop-Rock";
+    }
+
     simplifiedSong[simplifiedFieldsToUse[i]] = text;
   }
 
