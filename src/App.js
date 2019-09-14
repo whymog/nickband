@@ -30,7 +30,7 @@ class App extends React.Component {
 
     db.forEach(song => {
       if (filters.isOwned && song.owned !== "Y") return;
-      if (filters.genre.length && filters.genre.length !== song.genre) return;
+      if (filters.genre.length && filters.genre !== song.genre) return;
       if (
         filters.searchString.length &&
         !song.title.match(filters.searchString) &&
@@ -53,6 +53,15 @@ class App extends React.Component {
     console.log(genres);
 
     return genres;
+  }
+
+  setGenreFilter(e) {
+    this.setState({
+      filters: {
+        ...this.state.filters,
+        genre: e.target.name
+      }
+    });
   }
 
   toggleOwnedSongs() {
@@ -91,9 +100,12 @@ class App extends React.Component {
             Show only songs that Nick owns
           </label>
         </div>
-        {genres.map(genre => (
-          <button>{genre}</button>
+        {genres.map((genre, i) => (
+          <button key={i} name={genre} onClick={this.setGenreFilter.bind(this)}>
+            {genre}
+          </button>
         ))}
+        <button onClick={this.setGenreFilter.bind(this)}>CLEAR GENRE</button>
         {filteredSongs.map((song, i) => (
           <Song key={i} {...song} />
         ))}
