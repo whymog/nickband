@@ -130,19 +130,11 @@ class App extends React.Component {
           </div>
           <div>{sortedSongs.length} shown</div>
           <div className={styles.option}>
-            <input
-              id="ownedSongsToggle"
-              type="checkbox"
-              onChange={this.toggleOwnedSongs.bind(this)}
-            />
+            <input id="ownedSongsToggle" type="checkbox" onChange={this.toggleOwnedSongs.bind(this)} />
             <label htmlFor="ownedSongsToggle">Show only songs that Nick owns</label>
           </div>
           <div className={styles.option}>
-            <input
-              id="showGenresToggle"
-              type="checkbox"
-              onChange={this.toggleVisibleGenres.bind(this)}
-            />
+            <input id="showGenresToggle" type="checkbox" onChange={this.toggleVisibleGenres.bind(this)} />
             <label htmlFor="showGenresToggle">Filter by genre</label>
           </div>
           {isShowingGenreFilters &&
