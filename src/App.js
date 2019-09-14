@@ -114,7 +114,7 @@ class App extends React.Component {
         <h1 className={styles.title}>NickBand v0.1</h1>
         <div className={styles.options}>
           <div>
-            {ownedSongs} songs owned, {totalSongs} available
+            <span className={styles.bold}>{ownedSongs} songs</span> owned, {totalSongs} available
           </div>
           <div>{sortedSongs.length} shown</div>
           <div className={styles.option}>
