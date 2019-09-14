@@ -13,11 +13,12 @@ class App extends React.Component {
         genre: "",
         searchString: ""
       },
-      isShowingGenreFilters: false,
-      sortByTitle: false,
       genres: this.getGenres(db),
-      totalSongs: db.length,
-      ownedSongs: this.getOwnedSongsCount()
+      isDarkMode: false,
+      isShowingGenreFilters: false,
+      ownedSongs: this.getOwnedSongsCount(),
+      sortByTitle: false,
+      totalSongs: db.length
     };
   }
 
@@ -100,8 +101,14 @@ class App extends React.Component {
     });
   }
 
+  toggleDarkMode() {
+    this.setState({
+      isDarkMode: !this.state.isDarkMode
+    });
+  }
+
   render() {
-    const { totalSongs, ownedSongs, isShowingGenreFilters, sortByTitle } = this.state;
+    const { totalSongs, ownedSongs, isShowingGenreFilters, sortByTitle, isDarkMode } = this.state;
 
     let filteredSongs = this.getFilteredSongs();
     let sortedSongs = this.getSortedSongs(filteredSongs, sortByTitle);
@@ -110,8 +117,13 @@ class App extends React.Component {
     this.state.genres.forEach(genre => genres.push(genre));
 
     return (
-      <div className={styles.app}>
-        <h1 className={styles.title}>NickBand v0.1</h1>
+      <div className={`${styles.app} ${isDarkMode ? styles.dark : ""}`}>
+        <h1 className={styles.title}>
+          NickBand v0.1{" "}
+          <span className={styles.darkModeToggle} onClick={this.toggleDarkMode.bind(this)}>
+            {isDarkMode ? "🌞" : "🌙"}
+          </span>
+        </h1>
         <div className={styles.options}>
           <div>
             <span className={styles.bold}>{ownedSongs} songs</span> owned, {totalSongs} available
@@ -142,7 +154,7 @@ class App extends React.Component {
           <button onClick={this.setGenreFilter.bind(this)}>CLEAR GENRE</button>
         </div>
         {sortedSongs.map((song, i) => (
-          <Song key={i} {...song} />
+          <Song key={i} isDarkMode={isDarkMode} {...song} />
         ))}
       </div>
     );

@@ -21,7 +21,7 @@ songs.map(song => {
     if (simplifiedFieldsToUse[i] === "title") {
       // Cleanup titles
 
-      text = text.match(/([\w\d\s'\/]+)/);
+      text = text.match(/([\w\d\s'\/\.!?]+)/);
 
       text = text[1];
       console.log(text);

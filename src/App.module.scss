@@ -16,7 +16,7 @@
     letter-spacing: 0.01em;
 
     color: $white;
-    background-color: $blue-dark;
+    background-color: $purple;
   }
 
   .options {
@@ -26,6 +26,21 @@
     .option {
       margin: 8px 0;
       display: block;
+    }
+  }
+
+  .darkModeToggle {
+    position: absolute;
+    right: 32px;
+    cursor: pointer;
+  }
+
+  &.dark {
+    background-color: $gray-44;
+    color: $white;
+
+    .title {
+      background-color: $blue-dark;
     }
   }
 }
