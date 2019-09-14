@@ -27,7 +27,7 @@ songs.map(song => {
     if (simplifiedFieldsToUse[i] === "title") {
       // Cleanup titles
 
-      text = text.match(/([\w\d\s]+)/);
+      text = text.match(/([\w\d\s']+)/);
 
       text = text[1];
       console.log(text);
@@ -39,7 +39,7 @@ songs.map(song => {
   simplifiedSongs.push(simplifiedSong);
 });
 
-fs.writeFile("./data/db.json", JSON.stringify(simplifiedSongs), err => {
+fs.writeFile("./src/data/db.json", JSON.stringify(simplifiedSongs), err => {
   if (err) throw err;
   console.log("Database created!");
 });
