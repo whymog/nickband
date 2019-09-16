@@ -86,10 +86,7 @@ class App extends React.Component {
 
     songs.forEach(song => songGenres.push(song.genre));
 
-    const genres = new Set(songGenres);
-    console.log(genres);
-
-    return genres;
+    return new Set(songGenres);
   }
 
   setGenreFilter(e) {
@@ -150,12 +147,16 @@ class App extends React.Component {
     const genres = [];
     this.state.genres.forEach(genre => genres.push(genre));
 
+    let previousEntryName = "";
+
+    const alphabet = Array.from("abcdefghijklmnopqrstuvwxyz");
+
     return (
       <div className={`${styles.app} ${isDarkMode ? styles.dark : ""}`}>
         <h1 className={styles.title}>
           NickBand <span className={styles.version}>v0.1</span>{" "}
           <span className={styles.darkModeToggle} onClick={this.toggleDarkMode.bind(this)}>
-            {isDarkMode ? "🌞" : "🌙"}
+            {isDarkMode ? "🌙" : "🌞"}
           </span>
         </h1>
         <div className={styles.options}>
@@ -218,10 +219,62 @@ class App extends React.Component {
           <button className={styles.button} onClick={this.clearFilters.bind(this)}>
             CLEAR FILTERS
           </button>
+          <div>
+            Jump to a letter:{" "}
+            <div className={styles.jumpToLetterWrapper}>
+              {alphabet.map(letter => (
+                <span
+                  key={letter}
+                  className={styles.jumpToLetterLink}
+                  onClick={() => {
+                    const element = document.getElementById(`section-${letter.toUpperCase()}`);
+                    element.scrollIntoView({ behavior: "smooth" });
+                  }}
+                >
+                  {letter.toUpperCase()}
+                </span>
+              ))}
+            </div>
+          </div>
         </div>
-        {sortedSongs.map((song, i) => (
-          <Song key={i} isDarkMode={isDarkMode} {...song} />
-        ))}
+        {sortedSongs.map((song, i) => {
+          let shouldInsertNewLetter = false;
+          const newEntryName = sortByTitle ? song.title : song.artist;
+
+          if (
+            !previousEntryName.length ||
+            (previousEntryName.length && newEntryName.charAt(0) > previousEntryName.charAt(0))
+          ) {
+            shouldInsertNewLetter = true;
+          }
+
+          previousEntryName = newEntryName;
+
+          return (
+            <React.Fragment key={i}>
+              {shouldInsertNewLetter ? (
+                <div className={styles.sectionHeader}>
+                  <span id={`section-${newEntryName.charAt(0)}`}>{newEntryName.charAt(0)}</span>
+                  <span
+                    className={styles.backToTop}
+                    onClick={() => {
+                      window.scroll({
+                        top: 0,
+                        left: 0,
+                        behavior: "smooth"
+                      });
+                    }}
+                  >
+                    back to top
+                  </span>
+                </div>
+              ) : (
+                ""
+              )}
+              <Song key={i} isDarkMode={isDarkMode} {...song} />
+            </React.Fragment>
+          );
+        })}
       </div>
     );
   }
