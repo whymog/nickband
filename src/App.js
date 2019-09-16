@@ -86,10 +86,7 @@ class App extends React.Component {
 
     songs.forEach(song => songGenres.push(song.genre));
 
-    const genres = new Set(songGenres);
-    console.log(genres);
-
-    return genres;
+    return new Set(songGenres);
   }
 
   setGenreFilter(e) {
@@ -159,7 +156,7 @@ class App extends React.Component {
         <h1 className={styles.title}>
           NickBand <span className={styles.version}>v0.1</span>{" "}
           <span className={styles.darkModeToggle} onClick={this.toggleDarkMode.bind(this)}>
-            {isDarkMode ? "🌞" : "🌙"}
+            {isDarkMode ? "🌙" : "🌞"}
           </span>
         </h1>
         <div className={styles.options}>
