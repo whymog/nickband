@@ -150,6 +150,8 @@ class App extends React.Component {
     const genres = [];
     this.state.genres.forEach(genre => genres.push(genre));
 
+    let previousEntryName = "";
+
     return (
       <div className={`${styles.app} ${isDarkMode ? styles.dark : ""}`}>
         <h1 className={styles.title}>
@@ -219,9 +221,32 @@ class App extends React.Component {
             CLEAR FILTERS
           </button>
         </div>
-        {sortedSongs.map((song, i) => (
-          <Song key={i} isDarkMode={isDarkMode} {...song} />
-        ))}
+        {sortedSongs.map((song, i) => {
+          let shouldInsertNewLetter = false;
+          const newEntryName = sortByTitle ? song.title : song.artist;
+
+          if (
+            !previousEntryName.length ||
+            (previousEntryName.length && newEntryName.charAt(0) > previousEntryName.charAt(0))
+          ) {
+            shouldInsertNewLetter = true;
+          }
+
+          previousEntryName = newEntryName;
+
+          return (
+            <>
+              {shouldInsertNewLetter ? (
+                <div key={`header-${newEntryName.charAt(0)}`} className={styles.sectionHeader}>
+                  {newEntryName.charAt(0)}
+                </div>
+              ) : (
+                ""
+              )}
+              <Song key={i} isDarkMode={isDarkMode} {...song} />
+            </>
+          );
+        })}
       </div>
     );
   }

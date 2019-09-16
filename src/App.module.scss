@@ -1,8 +1,7 @@
 @import "./_variables.scss";
 
 .app {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans",
-    "Helvetica Neue", sans-serif;
+  font-family: $font-family-default;
   min-height: 100vh;
 
   .title {
@@ -68,6 +67,17 @@
       background-color: $orange;
       color: $white;
     }
+  }
+
+  .sectionHeader {
+    width: calc(100vw * 10 / 12);
+    margin: 0 auto;
+    padding: 4px calc(100vw * 1 / 12) 8px;
+    font-size: 24px;
+    font-weight: 700;
+
+    background-color: $purple;
+    color: $white;
   }
 
   &.dark {
