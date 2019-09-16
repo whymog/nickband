@@ -69,15 +69,41 @@
     }
   }
 
+  .jumpToLetterWrapper {
+    width: 100%;
+    margin: 12px 0;
+    display: flex;
+    flex-wrap: wrap;
+
+    .jumpToLetterLink {
+      margin-right: 4px;
+      font-size: 18px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+  }
+
   .sectionHeader {
     width: calc(100vw * 10 / 12);
     margin: 0 auto;
     padding: 4px calc(100vw * 1 / 12) 8px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
     font-size: 24px;
     font-weight: 700;
 
     background-color: $purple;
     color: $white;
+
+    .backToTop {
+      font-size: 16px;
+      font-weight: 400;
+
+      cursor: pointer;
+    }
   }
 
   &.dark {
@@ -95,6 +121,10 @@
       &.active {
         background-color: $orange;
       }
+    }
+
+    .sectionHeader {
+      background-color: $blue-dark;
     }
   }
 }

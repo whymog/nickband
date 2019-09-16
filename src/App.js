@@ -152,6 +152,8 @@ class App extends React.Component {
 
     let previousEntryName = "";
 
+    const alphabet = Array.from("abcdefghijklmnopqrstuvwxyz");
+
     return (
       <div className={`${styles.app} ${isDarkMode ? styles.dark : ""}`}>
         <h1 className={styles.title}>
@@ -220,6 +222,23 @@ class App extends React.Component {
           <button className={styles.button} onClick={this.clearFilters.bind(this)}>
             CLEAR FILTERS
           </button>
+          <div>
+            Jump to a letter:{" "}
+            <div className={styles.jumpToLetterWrapper}>
+              {alphabet.map(letter => (
+                <span
+                  key={letter}
+                  className={styles.jumpToLetterLink}
+                  onClick={() => {
+                    const element = document.getElementById(`section-${letter.toUpperCase()}`);
+                    element.scrollIntoView({ behavior: "smooth" });
+                  }}
+                >
+                  {letter.toUpperCase()}
+                </span>
+              ))}
+            </div>
+          </div>
         </div>
         {sortedSongs.map((song, i) => {
           let shouldInsertNewLetter = false;
@@ -235,16 +254,28 @@ class App extends React.Component {
           previousEntryName = newEntryName;
 
           return (
-            <>
+            <React.Fragment key={i}>
               {shouldInsertNewLetter ? (
-                <div key={`header-${newEntryName.charAt(0)}`} className={styles.sectionHeader}>
-                  {newEntryName.charAt(0)}
+                <div className={styles.sectionHeader}>
+                  <span id={`section-${newEntryName.charAt(0)}`}>{newEntryName.charAt(0)}</span>
+                  <span
+                    className={styles.backToTop}
+                    onClick={() => {
+                      window.scroll({
+                        top: 0,
+                        left: 0,
+                        behavior: "smooth"
+                      });
+                    }}
+                  >
+                    back to top
+                  </span>
                 </div>
               ) : (
                 ""
               )}
               <Song key={i} isDarkMode={isDarkMode} {...song} />
-            </>
+            </React.Fragment>
           );
         })}
       </div>
