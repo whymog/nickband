@@ -12,13 +12,13 @@ const fieldsToUse = ["gsx$songtitle", "gsx$artist", "gsx$decade", "gsx$genre", "
 const simplifiedFieldsToUse = ["title", "artist", "year", "genre", "owned"];
 
 const simplifiedSongs = [];
-songs.map(song => {
+songs.map((song, i) => {
   const simplifiedSong = {};
 
-  for (let i = 0; i < fieldsToUse.length; i++) {
-    let text = song[fieldsToUse[i]]["$t"];
+  for (let j = 0; j < fieldsToUse.length; j++) {
+    let text = song[fieldsToUse[j]]["$t"];
 
-    if (simplifiedFieldsToUse[i] === "title") {
+    if (simplifiedFieldsToUse[j] === "title") {
       // Cleanup titles
       text = text.match(/([\w\d\s'\/\.&!¿?:;,-]+)/);
       text = text[1];
@@ -26,17 +26,19 @@ songs.map(song => {
     }
 
     // Mix Pop/Rock and Pop-Rock together
-    if (simplifiedFieldsToUse[i] === "genre" && text === "Pop/Rock") {
+    if (simplifiedFieldsToUse[j] === "genre" && text === "Pop/Rock") {
       text = "Pop-Rock";
     }
 
     // Mix Prog and Progressive together
-    if (simplifiedFieldsToUse[i] === "genre" && text === "Progressive") {
+    if (simplifiedFieldsToUse[j] === "genre" && text === "Progressive") {
       text = "Prog";
     }
 
-    simplifiedSong[simplifiedFieldsToUse[i]] = text;
+    simplifiedSong[simplifiedFieldsToUse[j]] = text;
   }
+
+  simplifiedSong.id = i;
 
   simplifiedSongs.push(simplifiedSong);
 });
