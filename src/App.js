@@ -1,4 +1,5 @@
 import React from "react";
+
 import Song from "./components/Song/index";
 import db from "./data/db.json";
 import styles from "./App.module.scss";
@@ -9,6 +10,7 @@ class App extends React.Component {
 
     this.state = {
       filters: {
+        isFavorite: false,
         isOwned: false,
         genre: "",
         searchString: ""
@@ -20,6 +22,11 @@ class App extends React.Component {
       sortByTitle: false,
       totalSongs: db.length
     };
+
+    // Initialize favorites in localStorage if not present
+    if (window.localStorage.getItem("favorites") === null) {
+      window.localStorage.setItem("favorites", JSON.stringify([]));
+    }
   }
 
   clearFilters() {
@@ -37,6 +44,17 @@ class App extends React.Component {
     });
   }
 
+  clearFavorites() {
+    const shouldClearFavorites = window.confirm(
+      "WARNING: Are you sure you want to clear out all of your favorite songs?"
+    );
+
+    if (shouldClearFavorites) {
+      window.localStorage.setItem("favorites", JSON.stringify([]));
+      this.forceUpdate();
+    }
+  }
+
   getOwnedSongsCount() {
     const ownedSongs = db.filter(song => song.owned === "Y");
     return ownedSongs.length;
@@ -44,11 +62,13 @@ class App extends React.Component {
 
   getFilteredSongs() {
     const { filters } = this.state;
+    const favorites = JSON.parse(window.localStorage.getItem("favorites"));
 
     let filteredSongs = [];
 
     db.forEach(song => {
       if (filters.isOwned && song.owned !== "Y") return;
+      if (filters.isFavorite && favorites.indexOf(song.id) < 0) return;
       if (filters.genre.length && filters.genre !== song.genre) return;
       if (
         filters.searchString.length &&
@@ -98,6 +118,15 @@ class App extends React.Component {
     });
   }
 
+  toggleFavoriteSongs() {
+    this.setState({
+      filters: {
+        ...this.state.filters,
+        isFavorite: !this.state.filters.isFavorite
+      }
+    });
+  }
+
   toggleOwnedSongs() {
     this.setState({
       filters: {
@@ -117,6 +146,26 @@ class App extends React.Component {
     this.setState({
       isDarkMode: !this.state.isDarkMode
     });
+  }
+
+  toggleFavorite(id) {
+    if (id >= 0) {
+      const favorites = JSON.parse(window.localStorage.getItem("favorites"));
+
+      const faveIndex = favorites.indexOf(id);
+
+      if (faveIndex > -1) {
+        favorites.splice(faveIndex, 1);
+      } else {
+        favorites.push(id);
+      }
+
+      window.localStorage.setItem("favorites", JSON.stringify(favorites));
+
+      // Since we're only using localStorage and not state to manage favorites,
+      // React needs to be told to update
+      this.forceUpdate();
+    }
   }
 
   toggleSortBy() {
@@ -139,7 +188,7 @@ class App extends React.Component {
 
   render() {
     const { totalSongs, ownedSongs, filters, isShowingGenreFilters, sortByTitle, isDarkMode } = this.state;
-    const { isOwned } = filters;
+    const { isFavorite, isOwned } = filters;
 
     let filteredSongs = this.getFilteredSongs();
     let sortedSongs = this.getSortedSongs(filteredSongs, sortByTitle);
@@ -151,10 +200,13 @@ class App extends React.Component {
 
     const alphabet = Array.from("abcdefghijklmnopqrstuvwxyz");
 
+    // Get favorites
+    const favorites = JSON.parse(window.localStorage.getItem("favorites"));
+
     return (
       <div className={`${styles.app} ${isDarkMode ? styles.dark : ""}`}>
         <h1 className={styles.title}>
-          NickBand <span className={styles.version}>v0.1</span>{" "}
+          NickBand <span className={styles.version}>v0.1.1</span>{" "}
           <span className={styles.darkModeToggle} onClick={this.toggleDarkMode.bind(this)}>
             {isDarkMode ? "🌙" : "🌞"}
           </span>
@@ -182,6 +234,15 @@ class App extends React.Component {
               checked={isOwned ? true : false}
             />
             <label htmlFor="ownedSongsToggle">Show only songs that Nick owns</label>
+          </div>
+          <div className={styles.option}>
+            <input
+              id="favoriteSongsToggle"
+              type="checkbox"
+              onChange={this.toggleFavoriteSongs.bind(this)}
+              checked={isFavorite ? true : false}
+            />
+            <label htmlFor="favoriteSongsToggle">Show only favorites</label>
           </div>
           <div className={styles.option}>
             <input
@@ -218,6 +279,9 @@ class App extends React.Component {
           </div>
           <button className={styles.button} onClick={this.clearFilters.bind(this)}>
             CLEAR FILTERS
+          </button>
+          <button className={styles.button} onClick={this.clearFavorites.bind(this)}>
+            CLEAR FAVORITES
           </button>
           <div>
             Jump to a letter:{" "}
@@ -271,7 +335,13 @@ class App extends React.Component {
               ) : (
                 ""
               )}
-              <Song key={i} isDarkMode={isDarkMode} {...song} />
+              <Song
+                key={i}
+                isDarkMode={isDarkMode}
+                {...song}
+                isFavorite={favorites.indexOf(song.id) >= 0}
+                toggleFavorite={this.toggleFavorite.bind(this)}
+              />
             </React.Fragment>
           );
         })}
