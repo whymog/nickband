@@ -44,6 +44,17 @@ class App extends React.Component {
     });
   }
 
+  clearFavorites() {
+    const shouldClearFavorites = window.confirm(
+      "WARNING: Are you sure you want to clear out all of your favorite songs?"
+    );
+
+    if (shouldClearFavorites) {
+      window.localStorage.setItem("favorites", JSON.stringify([]));
+      this.forceUpdate();
+    }
+  }
+
   getOwnedSongsCount() {
     const ownedSongs = db.filter(song => song.owned === "Y");
     return ownedSongs.length;
@@ -268,6 +279,9 @@ class App extends React.Component {
           </div>
           <button className={styles.button} onClick={this.clearFilters.bind(this)}>
             CLEAR FILTERS
+          </button>
+          <button className={styles.button} onClick={this.clearFavorites.bind(this)}>
+            CLEAR FAVORITES
           </button>
           <div>
             Jump to a letter:{" "}
