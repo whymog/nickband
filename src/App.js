@@ -1,4 +1,5 @@
 import React from "react";
+
 import Song from "./components/Song/index";
 import db from "./data/db.json";
 import styles from "./App.module.scss";
@@ -20,6 +21,11 @@ class App extends React.Component {
       sortByTitle: false,
       totalSongs: db.length
     };
+
+    // Initialize favorites in localStorage if not present
+    if (window.localStorage.getItem("favorites") === null) {
+      window.localStorage.setItem("favorites", JSON.stringify([]));
+    }
   }
 
   clearFilters() {
@@ -119,6 +125,26 @@ class App extends React.Component {
     });
   }
 
+  toggleFavorite(id) {
+    if (id >= 0) {
+      const favorites = JSON.parse(window.localStorage.getItem("favorites"));
+
+      const faveIndex = favorites.indexOf(id);
+
+      if (faveIndex > -1) {
+        favorites.splice(faveIndex, 1);
+      } else {
+        favorites.push(id);
+      }
+
+      window.localStorage.setItem("favorites", JSON.stringify(favorites));
+
+      // Since we're only using localStorage and not state to manage favorites,
+      // React needs to be told to update
+      this.forceUpdate();
+    }
+  }
+
   toggleSortBy() {
     this.setState({
       sortByTitle: !this.state.sortByTitle
@@ -151,10 +177,13 @@ class App extends React.Component {
 
     const alphabet = Array.from("abcdefghijklmnopqrstuvwxyz");
 
+    // Get favorites
+    const favorites = JSON.parse(window.localStorage.getItem("favorites"));
+
     return (
       <div className={`${styles.app} ${isDarkMode ? styles.dark : ""}`}>
         <h1 className={styles.title}>
-          NickBand <span className={styles.version}>v0.1</span>{" "}
+          NickBand <span className={styles.version}>v0.1.1</span>{" "}
           <span className={styles.darkModeToggle} onClick={this.toggleDarkMode.bind(this)}>
             {isDarkMode ? "🌙" : "🌞"}
           </span>
@@ -271,7 +300,13 @@ class App extends React.Component {
               ) : (
                 ""
               )}
-              <Song key={i} isDarkMode={isDarkMode} {...song} />
+              <Song
+                key={i}
+                isDarkMode={isDarkMode}
+                {...song}
+                isFavorite={favorites.indexOf(song.id) >= 0}
+                toggleFavorite={this.toggleFavorite.bind(this)}
+              />
             </React.Fragment>
           );
         })}
