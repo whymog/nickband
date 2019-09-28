@@ -20,7 +20,7 @@ songs.map((song, i) => {
 
     if (simplifiedFieldsToUse[j] === "title") {
       // Cleanup titles
-      text = text.match(/([\w\d\s'\/\.&!¿?:;,-]+)/);
+      text = text.match(/([\w\d\s'\/\.&!¿?:;,\-\(\)]+)/);
       text = text[1];
       text = text.trim();
     }
