@@ -206,7 +206,7 @@ class App extends React.Component {
     return (
       <div className={`${styles.app} ${isDarkMode ? styles.dark : ""}`}>
         <h1 className={styles.title}>
-          NickBand <span className={styles.version}>v0.1.1</span>{" "}
+          NickBand <span className={styles.version}>v0.1.2</span>{" "}
           <span className={styles.darkModeToggle} onClick={this.toggleDarkMode.bind(this)}>
             {isDarkMode ? "🌙" : "🌞"}
           </span>
