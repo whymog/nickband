@@ -10,6 +10,7 @@ class App extends React.Component {
 
     this.state = {
       filters: {
+        isFavorite: false,
         isOwned: false,
         genre: "",
         searchString: ""
@@ -50,11 +51,13 @@ class App extends React.Component {
 
   getFilteredSongs() {
     const { filters } = this.state;
+    const favorites = JSON.parse(window.localStorage.getItem("favorites"));
 
     let filteredSongs = [];
 
     db.forEach(song => {
       if (filters.isOwned && song.owned !== "Y") return;
+      if (filters.isFavorite && favorites.indexOf(song.id) < 0) return;
       if (filters.genre.length && filters.genre !== song.genre) return;
       if (
         filters.searchString.length &&
@@ -100,6 +103,15 @@ class App extends React.Component {
       filters: {
         ...this.state.filters,
         genre: e.target.name
+      }
+    });
+  }
+
+  toggleFavoriteSongs() {
+    this.setState({
+      filters: {
+        ...this.state.filters,
+        isFavorite: !this.state.filters.isFavorite
       }
     });
   }
@@ -165,7 +177,7 @@ class App extends React.Component {
 
   render() {
     const { totalSongs, ownedSongs, filters, isShowingGenreFilters, sortByTitle, isDarkMode } = this.state;
-    const { isOwned } = filters;
+    const { isFavorite, isOwned } = filters;
 
     let filteredSongs = this.getFilteredSongs();
     let sortedSongs = this.getSortedSongs(filteredSongs, sortByTitle);
@@ -211,6 +223,15 @@ class App extends React.Component {
               checked={isOwned ? true : false}
             />
             <label htmlFor="ownedSongsToggle">Show only songs that Nick owns</label>
+          </div>
+          <div className={styles.option}>
+            <input
+              id="favoriteSongsToggle"
+              type="checkbox"
+              onChange={this.toggleFavoriteSongs.bind(this)}
+              checked={isFavorite ? true : false}
+            />
+            <label htmlFor="favoriteSongsToggle">Show only favorites</label>
           </div>
           <div className={styles.option}>
             <input
