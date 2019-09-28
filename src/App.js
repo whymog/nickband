@@ -8,6 +8,8 @@ class App extends React.Component {
   constructor(props) {
     super(props);
 
+    const userWantsDarkMode = window.localStorage.getItem("darkMode") === "true";
+
     this.state = {
       filters: {
         isFavorite: false,
@@ -16,7 +18,7 @@ class App extends React.Component {
         searchString: ""
       },
       genres: this.getGenres(db),
-      isDarkMode: false,
+      isDarkMode: userWantsDarkMode,
       isShowingGenreFilters: false,
       ownedSongs: this.getOwnedSongsCount(),
       sortByTitle: false,
@@ -143,9 +145,14 @@ class App extends React.Component {
   }
 
   toggleDarkMode() {
-    this.setState({
-      isDarkMode: !this.state.isDarkMode
-    });
+    this.setState(
+      {
+        isDarkMode: !this.state.isDarkMode
+      },
+      () => {
+        window.localStorage.setItem("darkMode", JSON.stringify(this.state.isDarkMode));
+      }
+    );
   }
 
   toggleFavorite(id) {
@@ -206,7 +213,7 @@ class App extends React.Component {
     return (
       <div className={`${styles.app} ${isDarkMode ? styles.dark : ""}`}>
         <h1 className={styles.title}>
-          NickBand <span className={styles.version}>v0.1.2</span>{" "}
+          NickBand <span className={styles.version}>v0.1.3</span>{" "}
           <span className={styles.darkModeToggle} onClick={this.toggleDarkMode.bind(this)}>
             {isDarkMode ? "🌙" : "🌞"}
           </span>
